@@ -1,7 +1,7 @@
 # TaskManagement System develop using (Django)
 
 ### Here are some features that you can consider adding to your system:
-<br>
+
 - User authentication: Allow users to create an account, log in, and log out securely.
 
 - Task creation: Allow users to create tasks with a title, description, due date, and priority level.
