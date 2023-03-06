@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Django Apps
+    'apps.account',
 ]
 
 MIDDLEWARE = [
@@ -122,7 +124,17 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
+# User Customize Model
+AUTH_USER_MODEL = 'account.Account'
+
+
 # connect media and static
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
 MEDIA_URL = '/media/'
+
+
+LOGIN_REDIRECT_URL = '/'
+
+# email backend
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
