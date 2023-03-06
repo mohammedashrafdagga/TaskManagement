@@ -1,0 +1,9 @@
+{% autoescape off %}
+<!-- Welcome User -->
+Hi {{user.username}}
+<!--   Start Message -->
+Your Account has been Successfully Created, please click bellow link to activate
+http://{{domain}}{% url 'account:activate' uidb64=uid token=token %}
+
+<!-- end message -->
+{% endautoescape %}

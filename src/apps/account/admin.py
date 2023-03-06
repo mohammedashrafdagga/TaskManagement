@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Account
 
-# Register your models here.
+
+# adding Account Model into admin site
+admin.site.register(Account)
