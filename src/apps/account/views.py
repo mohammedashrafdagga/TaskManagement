@@ -10,9 +10,7 @@ from django.contrib.auth import login
 from .models import Account
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
-
-
-# Create your views here.
+from django.contrib.auth.decorators import login_required
 
 
 # register page
@@ -64,6 +62,7 @@ def activate_user(request, uidb64, token) -> None:
         return render(request, 'account/components/activate_invalid.html', {'error': 'invalid activate'})
 
 
+@login_required
 def change_password(request):
     '''
         Allow User update Password
@@ -77,5 +76,3 @@ def change_password(request):
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'account/change_password.html', {'form': form})
-
-
