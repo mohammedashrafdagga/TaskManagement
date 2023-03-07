@@ -9,7 +9,9 @@
         <a href="{% url 'team:team-main' %}">Teams</a>
       </li>
       <li class="py-4 border-b"><a href="#">Tasks</a></li>
-      <li class="py-4 border-b"><a href="#">User Information</a></li>
+      <li class="py-4 border-b">
+        <a href="{% url 'account:update-information' %}">User Information</a>
+      </li>
       <li class="py-4 border-b">
         <a href="{% url 'account:change-password' %}">Change Password</a>
       </li>

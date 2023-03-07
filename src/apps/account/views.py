@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import LoginForm, RegisterForm
+from .forms import UserUpdateInformationForm, RegisterForm
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -76,3 +76,15 @@ def change_password(request):
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'account/change_password.html', {'form': form})
+
+
+@login_required
+def update_information(request):
+    form = UserUpdateInformationForm(instance=request.user)
+    if request.method == 'POST':
+        form = UserUpdateInformationForm(
+            instance=request.user, data=request.POST, files=request.FILES)
+        if form.is_valid():
+            form.save()
+            return render(request, 'account/update_information.html', {'update_valid': True, 'form': form})
+    return render(request, 'account/update_information.html', {'form': form})

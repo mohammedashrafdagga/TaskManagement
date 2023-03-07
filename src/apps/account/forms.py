@@ -30,3 +30,19 @@ class RegisterForm(UserCreationForm):
             raise forms.ValidationError('email Already Exists, Use another')
         # this is if not exists
         return email
+
+
+class UserUpdateInformationForm(forms.ModelForm):
+
+    class Meta:
+        model = Account
+        fields = ('email', 'username', 'name', 'bio', 'image')
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        user = Account.objects.filter(
+            username=username).first()
+        if user and user != self.instance:
+            raise forms.ValidationError('The Username Already exists!')
+        return username
+
