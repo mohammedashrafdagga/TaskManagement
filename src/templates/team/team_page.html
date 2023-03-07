@@ -1,0 +1,76 @@
+<!-- side menu -->
+{% extends 'team/dashboard.html' %}
+<!-- start content  -->
+
+{% block dashboard_content %}
+<div class="dashboard-content">
+  <h2 class="text-2xl font-bold mb-4 pb-4 border-b border-gray-300">Teams</h2>
+
+  <!-- Create team section -->
+  <div class="mb-8">
+    <h3 class="text-lg font-bold mb-4">Create a team</h3>
+
+    <a
+      href="{% url 'team:create-team' %}"
+      class="bg-green-500 rounded-lg text-white my-2 py-2 px-4"
+    >
+      Create A Team
+    </a>
+  </div>
+
+  <!-- Join team section -->
+  <div class="mb-8">
+    <h3 class="text-lg font-bold mb-2">Join a team</h3>
+    <form method="POST" action="#" class="flex items-center">
+      {% csrf_token %}
+      <input
+        type="text"
+        name="team_code"
+        placeholder="Enter team code"
+        class="rounded-l-lg py-2 px-4 w-2/3 border"
+      />
+      <button
+        type="submit"
+        class="bg-blue-500 rounded-r-lg text-white py-2 px-4"
+      >
+        Join
+      </button>
+    </form>
+  </div>
+
+  <!-- My teams section -->
+  <div class="mb-8">
+    <h3 class="text-lg font-bold mb-2">My teams</h3>
+    {% if my_teams %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {% for team in my_teams %}
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <h4 class="font-bold mb-2">{{ team.name }}</h4>
+        <p class="text-gray-500">{{ team.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p>You are not a member of any team yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Joined teams section -->
+  <div class="mb-8">
+    <h3 class="text-lg font-bold mb-2">My joined teams</h3>
+    {% if joined_teams %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {% for team in joined_teams %}
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <h4 class="font-bold mb-2">{{ team.name }}</h4>
+        <p class="text-gray-500">{{ team.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p>You have not joined any team yet.</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

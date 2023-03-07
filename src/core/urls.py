@@ -11,6 +11,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('', home_page, name='home'),
     path('auth/', include('apps.account.urls', namespace='account')),
+    path('team/', include('apps.team.urls', namespace='team')),
 ]
 
 

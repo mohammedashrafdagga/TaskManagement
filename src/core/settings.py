@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Django Apps
     'apps.account',
+    'apps.team',
 ]
 
 MIDDLEWARE = [
@@ -133,7 +134,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
 MEDIA_URL = '/media/'
 
-
+LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = '/'
 
 # email backend
