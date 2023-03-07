@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import register_page, activate_user
+from .views import register_page, activate_user, change_password
 from django.contrib.auth import views as auth_views
 from .forms import LoginForm
 
@@ -16,4 +16,5 @@ urlpatterns = [
         form_class=LoginForm
     ), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/auth/login/'), name='logout'),
+    path('change-password/', change_password, name='change-password'),
 ]

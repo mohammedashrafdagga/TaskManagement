@@ -6,8 +6,10 @@ from django.utils.encoding import force_bytes, force_str
 from django.contrib.sites.shortcuts import get_current_site
 from .token import account_activate_token
 from django.http import HttpResponse
-from django.contrib.auth import login, logout
+from django.contrib.auth import login
 from .models import Account
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 
 # Create your views here.
@@ -60,3 +62,20 @@ def activate_user(request, uidb64, token) -> None:
             return render(request, 'account/components/activate_invalid.html')
     except:
         return render(request, 'account/components/activate_invalid.html', {'error': 'invalid activate'})
+
+
+def change_password(request):
+    '''
+        Allow User update Password
+    '''
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return redirect('team:team-main')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'account/change_password.html', {'form': form})
+
+
