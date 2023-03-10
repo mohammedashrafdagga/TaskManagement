@@ -1,0 +1,27 @@
+<!-- side menu -->
+{% extends 'components/dashboard.html' %}
+<!-- start content  -->
+
+{% block dashboard_content %}
+<div class="py-4">
+  <div class="container mx-auto">
+    <div class="md:max-w-md lg:max-w-full mx-auto overflow-hidden ">
+      <h2 class="text-3xl font-semibold mb-6 border-b">Teams</h2>
+      <div class="px-4 py-5 sm:p-6">
+        <!-- create team components -->
+        {% include 'team/components/create_team_section.html' %}
+
+        <!-- join team components -->
+        {% include 'team/components/join_team_section.html' %}
+
+        <!-- my teams components -->
+        {% include 'team/components/my_teams.html' %}
+
+        <!-- my teams i joined it components -->
+        {% include 'team/components/team_join.html' %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

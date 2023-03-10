@@ -1,0 +1,27 @@
+<!-- side menu -->
+{% extends 'pages/base_without.html' %}
+<!-- start content  -->
+{% block content %}
+<div class="flex flex-row flex-nowrap min-h-screen">
+  <div class="w-1/5 px-4 py-4 bg-gray-100">
+    <ul class="space-y-2">
+      <li class="py-4 border-b">
+        <a href="{% url 'team:team-main' %}">Teams</a>
+      </li>
+      <li class="py-4 border-b"><a href="#">Tasks</a></li>
+      <li class="py-4 border-b">
+        <a href="{% url 'account:update-information' %}">User Information</a>
+      </li>
+      <li class="py-4 border-b">
+        <a href="{% url 'account:change-password' %}">Change Password</a>
+      </li>
+      <li class="py-4 border-b">
+        <a href="{% url 'account:logout' %}">Logout</a>
+      </li>
+    </ul>
+  </div>
+  <div class="flex-grow border-l py-8 px-4">
+    {% block dashboard_content %} {% endblock %}
+  </div>
+</div>
+{% endblock %}

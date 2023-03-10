@@ -1,16 +1,16 @@
 from django.shortcuts import render, redirect
-from .forms import LoginForm, RegisterForm
+from .forms import UserUpdateInformationForm, RegisterForm
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.sites.shortcuts import get_current_site
 from .token import account_activate_token
 from django.http import HttpResponse
-from django.contrib.auth import login, logout
+from django.contrib.auth import login
 from .models import Account
-
-
-# Create your views here.
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
 
 
 # register page
@@ -60,3 +60,31 @@ def activate_user(request, uidb64, token) -> None:
             return render(request, 'account/components/activate_invalid.html')
     except:
         return render(request, 'account/components/activate_invalid.html', {'error': 'invalid activate'})
+
+
+@login_required
+def change_password(request):
+    '''
+        Allow User update Password
+    '''
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return redirect('team:team-main')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'account/change_password.html', {'form': form})
+
+
+@login_required
+def update_information(request):
+    form = UserUpdateInformationForm(instance=request.user)
+    if request.method == 'POST':
+        form = UserUpdateInformationForm(
+            instance=request.user, data=request.POST, files=request.FILES)
+        if form.is_valid():
+            form.save()
+            return render(request, 'account/update_information.html', {'update_valid': True, 'form': form})
+    return render(request, 'account/update_information.html', {'form': form})
