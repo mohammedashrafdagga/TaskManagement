@@ -17,7 +17,10 @@ class Team(models.Model):
     slug = models.SlugField(unique=True, default=uuid.uuid4)
     bio = models.TextField(blank=True)
     image = models.ImageField(
-        upload_to='team_images/', default='team_images/team.jgp')
+        upload_to='static/images/team_images/',
+        default='static/images/team_images/team.jgp',
+        blank=True, null=True
+    )
     members = models.ManyToManyField(
         Account, blank=True, related_name='members')
     # Account.members_set.all() -> return all team i joined it

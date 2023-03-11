@@ -13,10 +13,8 @@ urlpatterns = [
     path('auth/', include('apps.account.urls', namespace='account')),
     path('team/', include('apps.team.urls', namespace='team')),
 ]
-
+ 
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL,
                           document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)

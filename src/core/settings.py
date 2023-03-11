@@ -128,7 +128,7 @@ AUTH_USER_MODEL = 'account.Account'
 # connect media and static
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
-MEDIA_URL = '/media/'
+
 
 LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = '/team'
