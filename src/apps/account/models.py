@@ -27,7 +27,8 @@ class Account(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, blank=True)
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='static/images/user_images/',
-                              default='static/images/user_images/default.png')
+                              default='static/images/user_images/default.png',
+                              blank=True, null=True)
     bio = models.TextField(blank=True)
     # for user
     is_active = models.BooleanField(default=False)
