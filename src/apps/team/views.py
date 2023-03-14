@@ -1,23 +1,28 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from rest_framework import generics, status, serializers
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from .serializers import TeamSerializer
 from .models import Team
+from apps.api.utils import get_user_token
+from apps.api.permissions import IsOwner
+from apps.api.validations import validate_leader
 
 
-@login_required
-def main_page(request):
-    '''
-        Main Page for team
-    '''
-    # print(request.user)
-    my_teams = Team.objects.filter(leader=request.user)
-    # leader have just one team -> the related_name not use here
-    joined_teams = request.user.members.all()
-    return render(request, 'team/team_page.html', {'my_teams': my_teams, 'joined_teams': joined_teams})
+class TeamCreateAPIView(generics.CreateAPIView):
+    serializer_class = TeamSerializer
+
+    def perform_create(self, serializer):
+        user = get_user_token(self.request)
+        leader = validate_leader(leader=user)
+        serializer.save(leader=leader)
+        return Response(status=status.HTTP_201_CREATED)
 
 
-@login_required
-def create_team(request):
-    '''
-        Page for user allow to create team 
-    '''
-    return render(request, 'team/create_team.html')
+class TeamRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+    lookup_field = 'slug'
+
+    permission_classes = [
+        IsOwner
+    ]

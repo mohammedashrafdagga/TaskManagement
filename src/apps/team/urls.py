@@ -1,15 +1,9 @@
 from django.urls import path
-from .views import main_page, create_team
+from . import views
 
 app_name = 'team'
 
 urlpatterns = [
-    path('', main_page, name='team-main'),
-    # path('<slug:slug>/detail/', team_detail, name='team-detail'),
-    # path('join/<slug:slug>/<str:code>/', join_member, name='join_member'),
-    path('create/', create_team, name='create-team'),
-    # path('dashboard/', team_dashboard, name='dashboard'),
-
-    # other operation for frontend
-    # path('<slug:slug>/delete-member/<str:username>/', delete_member, name='delete-member'),
+    path('create/', views.TeamCreateAPIView.as_view(), name='create-team'),
+    path('<slug:slug>/', views.TeamRetrieveAPIView.as_view(), name='team-detail')
 ]
