@@ -13,3 +13,10 @@ class TeamSerializer(serializers.ModelSerializer):
             'bio',
             'create_at'
         ]
+
+    def validate_leader(self, leader):
+        team = Team.objects.filter(leader=leader).exists()
+        if team:
+            raise serializers.ValidationError(
+                {'message': 'Already Have a Team, Cannot Create More Than One Team'})
+        return leader
