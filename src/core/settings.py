@@ -35,8 +35,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Django Apps
     'apps.account',
-    'apps.team',
-    'apps.api',
+    # 'apps.team',
     'rest_framework',
     'rest_framework.authtoken',
 ]
