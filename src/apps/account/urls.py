@@ -7,7 +7,7 @@ from .views import (
 app_name = 'api-auth'
 
 urlpatterns = [
-    path('register/', UserCreationAPIView.as_views(), name='register'),
-    path('login/', UserLoginAPIView.as_views(), name='login'),
+    path('register/', UserCreationAPIView.as_view(), name='register'),
+    path('login/', UserLoginAPIView.as_view(), name='login'),
     path('logout/', UserLogoutAPIView.as_view(), name='logout')
 ]

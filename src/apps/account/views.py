@@ -10,6 +10,7 @@ class UserCreationAPIView(generics.CreateAPIView):
     '''
         Using To allow for any User to Create Account into system
     '''
+    permission_classes = [permissions.AllowAny]
     queryset = User.objects.all()
     serializer_class = UserCreationSerializer
 
@@ -18,12 +19,16 @@ class UserCreationAPIView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        token, _ = Token.objects.get_or_create(user=user)
-        # update response data
-        response_data = serializer.data
-        response_data['username'] = user.username
-        response_data['token'] = token.key
-        return Response(response_data, status=status.HTTP_201_CREATED)
+        print(user)
+        if user:
+            token, _ = Token.objects.get_or_create(user=user)
+            # update response data
+            response_data = serializer.data
+            response_data['username'] = user.username
+            response_data['token'] = token.key
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        return Response({"detail": "Authentication credentials were not provided."},
+                        status=status.HTTP_401_UNAUTHORIZED)
 
 
 class UserLoginAPIView(generics.GenericAPIView):
@@ -46,7 +51,7 @@ class UserLoginAPIView(generics.GenericAPIView):
                 'token': user_token.key
             }
             return Response({'data': response_data}, status=status.HTTP_200_OK)
-        return Response({'error': 'Invalid credentials'}, status=401)
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Logout
@@ -63,4 +68,4 @@ class UserLogoutAPIView(generics.GenericAPIView):
         # delete user token
         Token.objects.get(key=token).delete()
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_200_OK)
