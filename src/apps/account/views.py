@@ -19,7 +19,6 @@ class UserCreationAPIView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        print(user)
         if user:
             token, _ = Token.objects.get_or_create(user=user)
             # update response data
@@ -63,7 +62,7 @@ class UserLogoutAPIView(generics.GenericAPIView):
     authentication_classes = [authentication.TokenAuthentication]
 
     def post(self, request, *args, **kwargs):
-        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[0]
+        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
 
         # delete user token
         Token.objects.get(key=token).delete()
