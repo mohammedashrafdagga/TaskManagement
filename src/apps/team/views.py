@@ -142,10 +142,10 @@ class TaskAssignAPIView(generics.UpdateAPIView):
         user_id = request.data.get('user_id')
         user = User.objects.get(id=user_id)
 
-        # if we have someone assign to task
-        if task.assigned_to and user != task.assigned_to:
+        # if user already assign to task
+        if user == task.assigned_to:
             return Response(
-                {'message': 'we have someone already assign to task'},
+                {'message': 'you are already assign for this task'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
