@@ -1,9 +1,9 @@
 from rest_framework import permissions, authentication, generics, status
-from .serializers import TeamSerializer
+from .serializers import TeamSerializer, TaskSerializer
 from .models import Team
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.authtoken.models import Token
+from .utils import get_user
 
 
 class TeamCreateAPIView(generics.CreateAPIView):
@@ -32,8 +32,7 @@ class JoinTeamByCodeAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         # get a user try to join
-        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
-        user = Token.objects.get(key=token).user
+        user = get_user(request)
 
         # get team from code
         code = request.data.get('code')
@@ -68,12 +67,9 @@ class JoinTeamByCodeAPIView(APIView):
 
 class DeleteMemberAPIView(APIView):
     # To Getting User
-    def get_user(self, request):
-        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
-        return Token.objects.get(key=token).user
 
     def post(self, request):
-        user = self.get_user(request=request)
+        user = get_user(request=request)
 
         # get team by using code of team
         code = request.data.get('code')
@@ -96,3 +92,32 @@ class DeleteMemberAPIView(APIView):
             {'message': 'You have successfully remove from this team the team'},
             status=status.HTTP_200_OK
         )
+
+
+class CreateTaskAPIView(generics.CreateAPIView):
+    ' Allow To Leader of Team Create Task and assign That'
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def post(self, request, *args, **kwargs):
+        user = get_user(request)
+        team_slug = request.data.get('team_slug')
+        try:
+            team = Team.objects.get(slug=team_slug)
+        except Team.DoesNotExist:
+            return Response(
+                {'message': 'Invalid code'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        if user != team.leader:
+            return Response(
+                {'message': 'you not allowed to create Task in this team'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        # how get assign to
+        serializer = self.serializer_class(
+            data=request.data, context={'team': team})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
