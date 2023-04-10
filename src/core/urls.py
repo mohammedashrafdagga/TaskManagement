@@ -9,7 +9,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('api-auth/', include('apps.account.urls', namespace='api-auth')),
-    # path('api-team/', include('apps.team.urls', namespace='team')),
+    path('api-team/', include('apps.team.urls', namespace='api-team')),
 ]
 
 
