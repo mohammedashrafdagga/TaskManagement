@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     TeamCreateAPIView, JoinTeamByCodeAPIView, DeleteMemberAPIView,
-    CreateTaskAPIView, TaskAssignAPIView
+    CreateTaskAPIView, TaskAssignAPIView, RemoveAssignToUserView
 )
 
 
@@ -13,5 +13,7 @@ urlpatterns = [
     path('delete-member/', DeleteMemberAPIView.as_view(), name='delete-member'),
     path('tasks/create/', CreateTaskAPIView.as_view(), name='create-task'),
     path('task/<slug:slug>/assign/',
-         TaskAssignAPIView.as_view(), name='assign-task')
+         TaskAssignAPIView.as_view(), name='assign-task'),
+    path('task/<slug:slug>/remove-assign/',
+         RemoveAssignToUserView.as_view(), name='remove-assign')
 ]

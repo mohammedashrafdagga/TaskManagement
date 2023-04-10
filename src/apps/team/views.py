@@ -124,7 +124,7 @@ class CreateTaskAPIView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class TaskAssignAPIView(generics.RetrieveUpdateAPIView):
+class TaskAssignAPIView(generics.UpdateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     lookup_field = 'slug'
@@ -142,12 +142,6 @@ class TaskAssignAPIView(generics.RetrieveUpdateAPIView):
         user_id = request.data.get('user_id')
         user = User.objects.get(id=user_id)
 
-        # if user already assign to task
-        if user == task.assigned_to:
-            return Response(
-                {'message': 'you are already assign for this task'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
         # if we have someone assign to task
         if task.assigned_to and user != task.assigned_to:
             return Response(
@@ -161,3 +155,28 @@ class TaskAssignAPIView(generics.RetrieveUpdateAPIView):
             {'message': 'You have successfully assign this task'},
             status=status.HTTP_200_OK
         )
+
+
+class RemoveAssignToUserView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def post(self, request, slug, *args, **kwargs):
+        leader = get_user(request)
+        try:
+            task = Task.objects.get(slug=slug)
+        except Task.DoesNotExist:
+            return Response(
+                {
+                    'message': 'Invalid Task'
+                }, status=status.HTTP_400_BAD_REQUEST
+            )
+        if leader != task.team.leader:
+            return Response(
+                {'message': 'not allowed access this task to update'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        task.assigned_to = None
+        task.save()
+        serializer = TaskSerializer(task)
+        return Response(serializer.data, status=status.HTTP_200_OK)
