@@ -1,9 +1,10 @@
 from rest_framework import permissions, authentication, generics, status
 from .serializers import TeamSerializer, TaskSerializer
-from .models import Team
+from .models import Team, Task
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .utils import get_user
+from django.contrib.auth.models import User
 
 
 class TeamCreateAPIView(generics.CreateAPIView):
@@ -52,7 +53,7 @@ class JoinTeamByCodeAPIView(APIView):
             )
 
         # if already join for team
-        if user in team.member.filter(id=user.id).exists():
+        if team.member.filter(id=user.id).exists():
             return Response(
                 {'message': 'you are already join them'},
                 status=status.HTTP_400_BAD_REQUEST
@@ -121,3 +122,42 @@ class CreateTaskAPIView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class TaskAssignAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+    lookup_field = 'slug'
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def update(self, request, *args, **kwargs):
+        leader = get_user(request)
+        task = self.get_object()
+        if leader != task.team.leader:
+            return Response(
+                {'message': 'not allowed access this task to update'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        user_id = request.data.get('user_id')
+        user = User.objects.get(id=user_id)
+
+        # if user already assign to task
+        if user == task.assigned_to:
+            return Response(
+                {'message': 'you are already assign for this task'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        # if we have someone assign to task
+        if task.assigned_to and user != task.assigned_to:
+            return Response(
+                {'message': 'we have someone already assign to task'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        task.assigned_to = user
+        task.save()
+        return Response(
+            {'message': 'You have successfully assign this task'},
+            status=status.HTTP_200_OK
+        )

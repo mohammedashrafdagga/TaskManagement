@@ -51,6 +51,5 @@ class Task(models.Model):
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='in_progress')
 
-
     def __str__(self):
         return self.title
