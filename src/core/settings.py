@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     # Django Apps
     'apps.account',
     'apps.team',
+    'apps.task',
     'rest_framework',
     'rest_framework.authtoken',
 ]
