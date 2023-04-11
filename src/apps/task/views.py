@@ -100,3 +100,25 @@ class RemoveAssignToUserView(views.APIView):
         task.save()
         serializer = TaskSerializer(task)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UpdateTaskStatusAPIView(generics.UpdateAPIView):
+    serializer_class = TaskSerializer
+    lookup_field = 'slug'
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def update(self, request, *args, **kwargs):
+        user = get_user(request)
+        task = self.get_object()
+        if not user or user != task.assigned_to:
+            return Response(
+                {
+                    'message': 'Invalid Update Status of Task'
+                }, status=status.HTTP_400_BAD_REQUEST
+            )
+        status = request.data.get('status')
+        task.status = status
+        task.save()
+        serializer = TaskSerializer(task)
+        return Response(serializer.data, status=status.HTTP_200_OK)
