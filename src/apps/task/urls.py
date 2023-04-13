@@ -3,7 +3,8 @@ from .views import (
     CreateTaskAPIView,
     TaskAssignAPIView,
     RemoveAssignToUserView,
-    UpdateTaskStatusAPIView
+    UpdateTaskStatusAPIView,
+    TaskSearchListAPIView
 )
 app_name = 'api-task'
 
@@ -15,5 +16,6 @@ urlpatterns = [
     path('<slug:slug>/remove-assign/',
          RemoveAssignToUserView.as_view(), name='remove-assign'),
     path('<slug:slug>/update-status/',
-         UpdateTaskStatusAPIView.as_view(), name='task-update-status')
+         UpdateTaskStatusAPIView.as_view(), name='task-update-status'),
+    path('search/', TaskSearchListAPIView.as_view())
 ]

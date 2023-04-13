@@ -6,6 +6,7 @@ from apps.team.models import Team
 from rest_framework.authtoken.models import Token
 from .models import Task
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 # Create your views here.
 
 
@@ -121,4 +122,24 @@ class UpdateTaskStatusAPIView(generics.UpdateAPIView):
         task.status = status
         task.save()
         serializer = TaskSerializer(task)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Filtering Task depend (status)
+class TaskSearchListAPIView(generics.ListAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def get_queryset(self):
+        leader = get_user(self.request)
+        team = get_object_or_404(Team, leader=leader)
+        task_status = self.request.query_params.get('status')
+        due_date = self.request.query_params.get('due_date')
+        queryset = super().get_queryset().filter(team=team)
+        if task_status:
+            queryset = queryset.filter(status=task_status)
+        if due_date:
+            queryset = queryset.filter(due_date__lte=due_date)
+        return queryset
