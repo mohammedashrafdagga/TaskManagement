@@ -12,8 +12,6 @@
 
 - Task filtering and sorting: Allow users to filter and sort tasks based on different criteria (e.g., due date, status). (Done)
 
-- Notifications: Send email notifications to users when a task is assigned to them or when a task deadline is approaching. (in_progress)
-
-- Comments: Allow users to add comments to tasks to provide additional context or information.
+- Comments: Allow users to add comments to tasks to provide additional context or information. (in_progress)
 
 - Reporting: Provide users with reports and analytics about their tasks, such as completed tasks, overdue tasks, and task distribution by user or team.
